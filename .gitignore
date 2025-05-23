@@ -1,0 +1,4 @@
+data/
+train-model-env/
+__pycache__/
+sample-data.txt
