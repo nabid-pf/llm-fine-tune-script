@@ -74,24 +74,30 @@ def main():
     
     def generate_response(instruction):
         prompt = f"""### Instruction:\n{instruction}\n\n### Response:\n"""
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+        inputs = tokenizer(prompt, return_tensors="pt", padding=True)
+        # Move inputs to the same device as the model
+        inputs = {k: v.to(model.device) for k, v in inputs.items()}
         
         print("Generating response...")
         outputs = model.generate(
-            inputs.input_ids,
+            inputs["input_ids"],
+            attention_mask=inputs["attention_mask"],
             max_new_tokens=args.max_length,
             temperature=args.temperature,
             top_p=0.9,
-            do_sample=True
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id
         )
         
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        full_response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        # Extract only the response part after "### Response:"
+        response = full_response.split("### Response:")[1].strip()
+        print(f"Response: {response}")
         return response
     
     # Test with example inputs
     print(f"Input: {args.input}")
-    response = generate_response(args.input)
-    print(f"Response: {response}")
+    generate_response(args.input)
 
 if __name__ == "__main__":
     main()
