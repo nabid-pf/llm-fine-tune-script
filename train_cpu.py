@@ -63,12 +63,6 @@ def main():
     # Try TinyLlama which is specifically designed for resource-constrained environments
     print(f"Using CPU for training with model: {args.model_name}")
     
-    # Load tokenizer
-    print(f"Loading tokenizer...")
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    
     print(f"Loading model...")
     # Load model with options to conserve memory
     model = AutoModelForCausalLM.from_pretrained(
@@ -96,6 +90,12 @@ def main():
     model = get_peft_model(model, peft_config)
     model.print_trainable_parameters()
     
+    # Load tokenizer
+    print(f"Loading tokenizer...")
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
     # Prepare the data for causal language modeling
     def preprocess_function(examples):
         # Tokenize the text

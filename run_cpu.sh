@@ -44,8 +44,7 @@ else
     echo "Preparing dataset from source-data.txt (Ques/Ans format)"
     python3 prepare_dataset.py --input_file source-data.txt --format ques_ans
     DATASET_FILE="./data/processed_dataset.jsonl"
-    echo "No PDF file specified. Using text dataset: $DATASET_FILE"
-    echo "If you want to use a PDF file, run: export PDF_FILE=path/to/your/file.pdf"
+    echo "Using text dataset: $DATASET_FILE"
 fi
 
 # Start training with CPU-optimized script
